@@ -2,6 +2,13 @@ package com.example.concurrency.contentSwitch;
 
 /**
  * 上下文切换测试类
+ * 1、结论 循环数量在百万级别时 并发处理速度才会领先，说明上下文切换的存在
+ * 2、使用vmstat 查看测量上下文切换次数得出 1000次/s
+ * 3、减少上下文切换
+ *  1）无锁并发编程-》数据ID按照Hash算法取模分段 不同线程处理不同数据
+ *  2）CAS算法
+ *  3）协程：在单线程里实现多任务调度，并在单线程里维持多个任务的切换
+ *
  */
 public class ContentSwitchTest {
     private static final long count = 10000000l;
