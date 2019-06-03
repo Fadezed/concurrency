@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
  * 因为ThreadInfo的toString()最多只会打印8层的StackTrace，所以加上了最大打印层数的选项(默认为8)
  *
  * @author zed
- * @since 2019-06-03 11:14 AM
  */
 @Slf4j
 public class ThreadDumpHelper {

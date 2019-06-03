@@ -5,7 +5,6 @@ package com.example.concurrency.singleton;
  * 双重检查锁实现单例
  *
  * @author zed
- * @since 2019-06-03 2:48 PM
  */
 public class Singleton {
     /**

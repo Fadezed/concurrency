@@ -8,7 +8,6 @@ import com.example.concurrency.util.ThreadUtil;
  * 线程状态一览
  *
  * @author zed
- * @since 2019-06-03 2:32 PM
  */
 public class ThreadState {
     private static ThreadDumpHelper threadDumpHelper = new ThreadDumpHelper();

@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicLong;
  * TimeIntervalLimiter
  *
  * @author zed
- * @since 2019-06-03 11:16 AM
  */
 public class TimeIntervalLimiter {
 

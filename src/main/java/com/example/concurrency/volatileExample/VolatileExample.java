@@ -14,7 +14,6 @@ import java.util.Scanner;
  * volatile 只能保证可见性 无法保证原子性
  *
  * @author zed
- * @since 2019-06-03 2:04 PM
  */
 public class VolatileExample {
     private static int x = 0;

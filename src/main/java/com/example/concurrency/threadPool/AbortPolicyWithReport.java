@@ -11,7 +11,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * AbortPolicy线程拒绝策略
  * 如果线程池已满，退出申请并打印Thread Dump(会有一定的最少间隔，默认为10分钟）
  * @author zed
- * @since 2019-06-03 11:12 AM
  */
 @Slf4j
 public class AbortPolicyWithReport extends ThreadPoolExecutor.AbortPolicy {
