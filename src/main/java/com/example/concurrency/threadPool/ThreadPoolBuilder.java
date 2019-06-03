@@ -15,11 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
  * 
  * 使用示例如下：
  * 
- * <pre>
  * ExecutorService ExecutorService = new FixedThreadPoolBuilder().setPoolSize(10).build();
- * </pre>
- * 
- * 参考文章 《Java ThreadPool的正确打开方式》http://calvin1978.blogcn.com/articles/java-threadpool.html
  */
 public class ThreadPoolBuilder {
 
@@ -243,8 +239,8 @@ public class ThreadPoolBuilder {
 		}
 	}
 
-	/*
-	 * 创建ScheduledPool.
+	/**
+	 * 创建ScheduledPool
 	 */
 	public static class ScheduledThreadPoolBuilder {
 

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author zed
  * 并发常用工具类
  */
-public class Concurrents {
+public class ConcurrentUtil {
 
 	/**
 	 * 返回没有激烈CAS冲突的LongAdder, 并发的＋1将在不同的Counter里进行，只在取值时将多个Counter求和.

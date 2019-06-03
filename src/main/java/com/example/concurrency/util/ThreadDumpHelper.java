@@ -61,7 +61,7 @@ public class ThreadDumpHelper {
      * 强行打印ThreadDump，使用最轻量的采集方式，不打印锁信息
      * @param reasonMsg msg
      */
-    public void threadDump(String reasonMsg) {
+    private void threadDump(String reasonMsg) {
         log.info("Thread dump by ThreadDumpper" + (reasonMsg != null ? (" for " + reasonMsg) : ""));
 
         Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
@@ -81,9 +81,8 @@ public class ThreadDumpHelper {
      * @param thread t
      * @param stackTrace s
      * @param sb sb
-     * @return str
      */
-    private String dumpThreadInfo(Thread thread, StackTraceElement[] stackTrace, StringBuilder sb) {
+    private void dumpThreadInfo(Thread thread, StackTraceElement[] stackTrace, StringBuilder sb) {
         sb.append('\"').append(thread.getName()).append("\" Id=").append(thread.getId()).append(' ')
                 .append(thread.getState());
         sb.append('\n');
@@ -95,9 +94,7 @@ public class ThreadDumpHelper {
         if (i < stackTrace.length) {
             sb.append("\t...").append('\n');
         }
-
         sb.append('\n');
-        return sb.toString();
     }
 
     /**

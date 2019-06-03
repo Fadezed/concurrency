@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class ThreadUtil {
     /**
      * sleep等待, 单位为毫秒, 已捕捉并处理InterruptedException.
+     * @param durationMillis durationMillis
      */
     public static void sleep(long durationMillis) {
         try {
@@ -26,10 +27,12 @@ public class ThreadUtil {
 
     /**
      * sleep等待，已捕捉并处理InterruptedException.
+     * @param durationMillis value
+     * @param unit unit
      */
-    public static void sleep(long duration, TimeUnit unit) {
+    public static void sleep(long durationMillis, TimeUnit unit) {
         try {
-            Thread.sleep(unit.toMillis(duration));
+            Thread.sleep(unit.toMillis(durationMillis));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

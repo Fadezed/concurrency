@@ -1,7 +1,7 @@
 package com.example.concurrency;
 
 import com.example.concurrency.threadPool.ThreadPoolBuilder;
-import com.example.concurrency.util.Concurrents;
+import com.example.concurrency.util.ConcurrentUtil;
 import com.example.concurrency.util.ThreadDumpHelper;
 import com.example.concurrency.util.ThreadUtil;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class ThreadDumpHelperTest {
     @Test
     public void test() throws InterruptedException {
         ExecutorService executor = ThreadPoolBuilder.fixedPool().setPoolSize(10).build();
-        CountDownLatch countDownLatch = Concurrents.countDownLatch(10);
+        CountDownLatch countDownLatch = ConcurrentUtil.countDownLatch(10);
         for (int i = 0; i < 10; i++) {
             executor.execute(new LongRunTask(countDownLatch));
         }
