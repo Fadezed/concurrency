@@ -102,14 +102,16 @@ public final class QueueAbleCachedThreadPool extends java.util.concurrent.Thread
 			if (parent.isShutdown()) {
 				throw new RejectedExecutionException("Executor not running, can't force a command into the queue");
 			}
-			return super.offer(o); // forces the item onto the queue, to be used if the task is rejected
+			// forces the item onto the queue, to be used if the task is rejected
+			return super.offer(o);
 		}
 
 		public boolean force(Runnable o, long timeout, TimeUnit unit) throws InterruptedException {
 			if (parent.isShutdown()) {
 				throw new RejectedExecutionException("Executor not running, can't force a command into the queue");
 			}
-			return super.offer(o, timeout, unit); // forces the item onto the queue, to be used if the task is rejected
+			// forces the item onto the queue, to be used if the task is rejected
+			return super.offer(o, timeout, unit);
 		}
 
 		@Override

@@ -1,10 +1,11 @@
 package com.example.concurrency.deadLock;
 
-import com.example.concurrency.ThreadDumpHelper;
+import com.example.concurrency.util.ThreadDumpHelper;
+import com.example.concurrency.util.ThreadUtil;
 
-import java.util.concurrent.TimeUnit;
 
 /**
+ * @author zed
  * 死锁测试
  * 避免死锁常用方法
  * 1、避免一个线程同时获取多个锁
@@ -26,12 +27,7 @@ public class DeadLockTest {
     private void deadLock() {
         Thread t1 = new Thread(() -> {
             synchronized (A){
-                try{
-                    TimeUnit.SECONDS.sleep(2);
-//                    Thread.currentThread().sleep(2000);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
+                ThreadUtil.sleep(2);
                 synchronized (B){
                     System.out.println("1");
                 }
@@ -50,12 +46,7 @@ public class DeadLockTest {
         t1.start();
         t2.start();
 //        //获取最终状态，可能会出现线程T1 状态为TIMED_WAITING 状态（因为sleep）
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        ThreadUtil.sleep(2);
         dumpHelper.tryThreadDump();
     }
 }

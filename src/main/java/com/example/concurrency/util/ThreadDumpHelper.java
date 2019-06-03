@@ -1,4 +1,4 @@
-package com.example.concurrency;
+package com.example.concurrency.util;
 
 import com.example.concurrency.limiter.TimeIntervalLimiter;
 import lombok.extern.slf4j.Slf4j;

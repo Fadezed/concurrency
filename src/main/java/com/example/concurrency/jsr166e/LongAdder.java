@@ -4,7 +4,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-package com.example.concurrency;
+package com.example.concurrency.jsr166e;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
