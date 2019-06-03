@@ -1,6 +1,7 @@
 package com.example.concurrency.contentSwitch;
 
 /**
+ * @author zed
  * 上下文切换测试类
  * 1、结论 循环数量在百万级别时 并发处理速度才会领先，说明上下文切换的存在
  * 2、使用vmstat 查看测量上下文切换次数得出 1000次/s
@@ -11,7 +12,7 @@ package com.example.concurrency.contentSwitch;
  *
  */
 public class ContentSwitchTest {
-    private static final long count = 10000000l;
+    private static final long COUNT = 10000000L;
     public static void main(String[] args) throws InterruptedException{
         concurrency();
         serial();
@@ -22,13 +23,13 @@ public class ContentSwitchTest {
         long start = System.currentTimeMillis();
         Thread thread = new Thread(() -> {
             int a =0;
-            for (long i =0;i < count;i++){
+            for (long i =0;i < COUNT;i++){
                 a+=5;
             }
         });
         thread.start();
         int b = 0;
-        for(long i = 0;i < count;i ++){
+        for(long i = 0;i < COUNT;i ++){
             b--;
         }
         thread.join();
@@ -40,11 +41,11 @@ public class ContentSwitchTest {
     private static void serial() throws InterruptedException{
         long start = System.currentTimeMillis();
         int a = 0;
-        for(long i = 0;i < count;i++){
+        for(long i = 0;i < COUNT;i++){
             a+=5;
         }
         int b = 0;
-        for(long i = 0 ;i <count;i++){
+        for(long i = 0 ;i <COUNT;i++){
             b--;
         }
         long time = System.currentTimeMillis()-start;
