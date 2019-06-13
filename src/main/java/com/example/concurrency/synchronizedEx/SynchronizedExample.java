@@ -12,7 +12,9 @@ import java.util.List;
  */
 public class SynchronizedExample {
 
-
+    /**
+     * 利用Synchronized 实现原子操作
+     */
     static class SafeCalc {
         long value = 0L;
         synchronized long get() {
