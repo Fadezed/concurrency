@@ -18,11 +18,11 @@ public class AtomicCounter {
     private int i =0;
     public static void main(String[] args) {
         final AtomicCounter counter = new AtomicCounter();
-        List<Thread> ts = new ArrayList<>(600);
+        List<Thread> ts = new ArrayList<>(100);
         long start = System.currentTimeMillis();
         for (int j = 0; j < 100;j++){
             Thread t = new Thread(() -> {
-                for(int i = 0;i < 10000; i++){
+                for(int i = 0;i < 100000; i++){
                     counter.count();
                     counter.safeCount();
                 }
@@ -50,6 +50,7 @@ public class AtomicCounter {
      * 使用CAS 实现线程安全计数器
      */
     private void safeCount() {
+//        atomicInteger.incrementAndGet();
         for(;;){
             int i = atomicInteger.get();
             boolean flag = atomicInteger.compareAndSet(i,++i);
