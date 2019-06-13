@@ -20,7 +20,7 @@ public class VolatileExample {
     private static volatile boolean flag = false;
 
     private static void writer(){
-        x = 42;
+        x = 123;
         flag = true;
     }
     private static void reader(){
