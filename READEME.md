@@ -133,7 +133,7 @@ public class Singleton {
     
      `对一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。`
      
-    3. **传递性**
+    3. **传递性规则**
     `A Happens-Before B，且 B Happens-Before C，那么A Happens-Before C。`
     ![b1fa541e98c74bc2a033d9ac5ae7fbe1](media/15603924776282/b1fa541e98c74bc2a033d9ac5ae7fbe1.png)  
     
