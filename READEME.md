@@ -132,9 +132,11 @@ public class Singleton {
     2. **volatile 变量规则**
     
      `对一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。`
+     
     3. **传递性**
     `A Happens-Before B，且 B Happens-Before C，那么A Happens-Before C。`
     ![b1fa541e98c74bc2a033d9ac5ae7fbe1](media/15603924776282/b1fa541e98c74bc2a033d9ac5ae7fbe1.png)  
+    
     4. **管程（synchronized）中锁的规则**
         `对一个锁的解锁 Happens-Before 于后续对这个锁加锁`
         ```
@@ -161,6 +163,7 @@ public class Singleton {
         B.start();
 
         ```
+        
     6. **线程 join() 规则**
         `主线程 A 等待子线程 B 完成（主线程 A 通过调用子线程B 的 join() 方法实现），当子线程 B 完成后（主线程 A 中 join() 方法返回），主线程能够看到子线程的操作。`
   
