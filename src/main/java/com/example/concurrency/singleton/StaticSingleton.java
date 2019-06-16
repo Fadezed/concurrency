@@ -1,5 +1,8 @@
 package com.example.concurrency.singleton;
 
+/**
+ * @author zed
+ */
 public class StaticSingleton {
 
     private StaticSingleton(){
