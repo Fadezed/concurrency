@@ -12,7 +12,7 @@ package com.example.concurrency.contentSwitch;
  *
  */
 public class ContentSwitchTest {
-    private static final long COUNT = 10000000L;
+    private static final long COUNT = 10000000000L;
     public static void main(String[] args) throws InterruptedException{
         concurrency();
         serial();
@@ -26,6 +26,7 @@ public class ContentSwitchTest {
             for (long i =0;i < COUNT;i++){
                 a+=5;
             }
+            System.out.println(a);
         });
         thread.start();
         int b = 0;

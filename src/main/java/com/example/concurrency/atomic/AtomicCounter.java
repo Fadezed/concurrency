@@ -51,6 +51,7 @@ public class AtomicCounter {
      */
     private void safeCount() {
 //        atomicInteger.incrementAndGet();
+        //自旋
         for(;;){
             int i = atomicInteger.get();
             boolean flag = atomicInteger.compareAndSet(i,++i);

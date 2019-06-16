@@ -38,7 +38,7 @@ public class Visibility {
         }catch (InterruptedException e){
             Thread.currentThread().interrupt();
         }
-        return count;
+        return visibility.count;
     }
 
 }

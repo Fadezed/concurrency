@@ -85,14 +85,16 @@ public class VolatileExample {
             Thread t1 = new Thread(volatileInc,"t1") ;
             Thread t2 = new Thread(volatileInc,"t2") ;
             t1.start();
-            //t1.join();
-
             t2.start();
-            //t2.join();
-            for (int i=0;i<10000 ;i++){
-                count ++ ;
-                //count.incrementAndGet();
-            }
+
+            t1.join();
+
+
+            t2.join();
+//            for (int i=0;i<10000 ;i++){
+//                count ++ ;
+//                //count.incrementAndGet();
+//            }
 
 
             System.out.println("最终Count="+count);
