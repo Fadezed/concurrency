@@ -19,10 +19,9 @@
 ![11e0c64618c04edba52619f41aaa3565](media/15603298066863/11e0c64618c04edba52619f41aaa3565.png)
 
 
-
 -------
 
-# 2.并发问题总结
+# 2.抽象问题总结
 ## 并发程序的背后
 1. CPU 增加了缓存，以均衡与内存的速度差异；
 2. 操作系统增加了进程、线程，以分时复用 CPU，进而均衡 CPU 与 I/O 设备的速度差异；
@@ -84,10 +83,10 @@ public class Singleton {
 # 3.JAVA内存模型
 ## 按需禁用缓存以及编译优化 [代码来源](http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html)
 
-* ## volatile
+* ##volatile
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/volatileExample/VolatileExample.java)
 
-* ## synchronized
+* ##synchronized
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/synchronizedEx/SynchronizedExample.java)
     
     ```
@@ -107,7 +106,7 @@ public class Singleton {
     }  
     
     ```
-* ## final
+* ##final
 
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
     
@@ -125,7 +124,7 @@ public class Singleton {
 
     ```
 
-* ## Happens-Before六大规则
+* ##Happens-Before六大规则
     1. **程序的顺序性规则**
     
      `程序前面对某个变量的修改一定是对后续操作可见的。`
@@ -133,7 +132,7 @@ public class Singleton {
     2. **volatile 变量规则**
     
      `对一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。`
-     
+    
     3. **传递性规则**
     `A Happens-Before B，且 B Happens-Before C，那么A Happens-Before C。`
     ![b1fa541e98c74bc2a033d9ac5ae7fbe1](media/15603924776282/b1fa541e98c74bc2a033d9ac5ae7fbe1.png)  
@@ -164,7 +163,6 @@ public class Singleton {
         B.start();
 
         ```
-        
     6. **线程 join() 规则**
         `主线程 A 等待子线程 B 完成（主线程 A 通过调用子线程B 的 join() 方法实现），当子线程 B 完成后（主线程 A 中 join() 方法返回），主线程能够看到子线程的操作。`
   
@@ -258,7 +256,7 @@ public class Singleton {
     * 多核CPU ：最佳线程数 =CPU 核数 * [ 1 +（I/O 耗时 / CPU 耗时）
 
 -------
-# 6. 若干反例
+#6. 若干反例
 
 
 ```
@@ -312,8 +310,349 @@ void addIfNotExist(Vector v,
 }
 
 ```
+# 7. Lock和Condition
+## 重复造轮子的原因抑或Lock&Condition的优势
+* 能够响应中断
 
-    
+```
+synchronized 的问题是，持有锁 A 后，如果尝试获取锁 B 失败，那么线程就进入阻塞状态，一旦发生死锁，就没有任何机会来唤醒阻塞的线程。但如果阻塞状态的线程能够响应中断信号的时候，能够唤醒它，那它就有机会释放曾经持有的锁 A。这样就破坏了不可抢占条件了。
+```
+* 支持超时
 
+```
+如果线程在一段时间之内没有获取到锁，不是进入阻塞状态，而是返回一个错误，那这个线程也有机会释放曾经持有的锁。这样也能破坏不可抢占条件。
+```
+* 非阻塞地获取锁
+
+```
+如果尝试获取锁失败，并不进入阻塞状态，而是直接返回，那这个线程也有机会释放曾经持有的锁。这样也能破坏不可抢占条件。
+```
+### 体现在具体代码上就是Lock接口的三个方法
+```
+// 支持中断的 API
+void lockInterruptibly() throws InterruptedException;
+// 支持超时的 API
+boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
+// 支持非阻塞获取锁的 API
+boolean tryLock();
+
+```
+### 可重入锁（ReentrantLock）
+* 当线程 T1 执行到 ① 处时，已经获取到了锁 rtl ，当在 ① 处调用 get() 方法时，会在 ② 再次对锁rtl 执行加锁操作。此时，如果锁 rtl 是可重入的，那么线程 T1 可以再次加锁成功；如果锁 rtl 是不可重入的，那么线程 T1 此时会被阻塞。
+
+```
+class X {
+  private final Lock rtl =new ReentrantLock();
+  int value;
+  public int get() {
+    // 获取锁
+    rtl.lock();         ②
+    try {
+      return value;
+    } finally {
+      // 保证锁能释放
+      rtl.unlock();
+    }
+  }
+  public void addOne() {
+    // 获取锁
+    rtl.lock();  
+    try {
+      value = 1 + get(); ①
+    } finally {
+      // 保证锁能释放
+      rtl.unlock();
+    }
+  }
+}
+
+```
+### 公平锁和非公平锁
+* 指线程在等待队列中被唤醒的策略，如果是公平锁，则按照等待时间排序，优先唤醒时间长的
+
+```
+// 无参构造函数：默认非公平锁
+public ReentrantLock() {
+    sync = new NonfairSync();
+}
+// 根据公平策略参数创建锁
+public ReentrantLock(boolean fair){
+    sync = fair ? new FairSync() : new NonfairSync();
+}
+```
+### 用锁的最佳实践（from Doug Lea）
+* 永远只在更新对象的成员变量时加锁
+* 永远只在访问可变的成员变量时加锁
+* 永远不在调用其他对象的方法时加锁
+
+# 8.Semaphore
+### 信号量模型
+![1](media/15607571303480/1.png)
+### 方法语义
+* init():设置计数器的初始值。
+* down():计数器的值减 1；如果此时计数器的值小于 0，则当前线程将被阻塞，否则当前线程可以继续执行。(acquire())
+* up():计数器的值加 1；如果此时计数器的值小于或者等于0，则唤醒等待队列中的一个线程，并将其从等待队列中移除。(release())
+
+
+```
+class Semaphore{
+  // 计数器
+  int count;
+  // 等待队列
+  Queue queue;
+  // 初始化操作
+  Semaphore(int c){
+    this.count=c;
+  }
+  // 
+  void down(){
+    this.count--;
+    if(this.count<0){
+      // 将当前线程插入等待队列
+      // 阻塞当前线程
+    }
+  }
+  void up(){
+    this.count++;
+    if(this.count<=0) {
+      // 移除等待队列中的某个线程 T
+      // 唤醒线程 T
+    }
+  }
+}
+
+```
+
+### 使用方法
+#### 实现互斥
+#### 实现限流器（Semaphore 可以允许多个线程访问一个临界区）
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/semaphore/SemaphoreEx.java)
+
+# 9.ReadWriteLock、StampedLock、CountDownLatch、CyclicBarrier
+
+## ReadWriteLock 读写锁
+* 允许多个线程同时读共享变量
+* 只允许一个线程写共享变量
+* 如果一个写线程正在执行写操作，此时禁止读线程读共享变量
+
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/readWriteLock/CacheByReadWriteLock.java)
+
+## StampedLock 加上乐观读（无锁）
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/readWriteLock/StampedLockEx.java)
+
+## CountDownLatch
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/countDownLatchEx/CountDownLatchEx.java)
+
+##  CyclicBarrier
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/cyclicBarrierEx/CyclicBarrierEx.java)
+
+   
+   
+# 10. 并发容器
+## 同步容器（jdk1.5 之前）
+### 包装安全类
+* List list = Collections.synchronizedList(new ArrayList());
+* Set set = Collections.synchronizedSet(new HashSet());
+* Map map = Collections.synchronizedMap(new HashMap());
+
+### Vector、Stack 和 Hashtable（基于synchronized实现）
+
+### 对同步容器做遍历操作时需要加锁保证互斥
+* 如下组合操作非原子操作，故通过synchronized保证原子操作
+
+```
+List list = Collections.synchronizedList(new ArrayList());
+synchronized (list) {  
+  Iterator i = list.iterator(); 
+  while (i.hasNext())
+    foo(i.next());
+}    
+
+```
+
+## 并发容器（jdk1.5 之后）
+![rongqi](media/15607632412286/rongqi.png)
+
+### List
+CopyOnWriteArrayList写的时候会将共享变量新复制一份出来，这样做的好处是读操作完全无锁）
+
+* 内部维护了一个数组，成员变量 array 就指向这个内部数组，所有的读操作都是基于 array 进行的，如下图所示，迭代器 Iterator 遍历的就是 array 数组。
+     ![list1](media/15607632412286/list1.png)
+
+* 若遍历 array 的同时，新增元素，CopyOnWriteArrayList 会将 array 复制一份，然后在新复制处理的数组上执行增加元素的操作，执行完之后再将 array 指向这个新的数组。读写是可以并行的，遍历操作一直都是基于原 array 执行，而写操作则是基于新 array 进行。
+ ![list2](media/15607632412286/list2.png)
+
+* 总结：
+    * 仅适用于写操作非常少的场景，而且能够容忍读写的短暂不一致。例如上面的例子中，写入的新元素并不能立刻被遍历到。
+    * 迭代器是只读的，不支持增删改。因为迭代器遍历的仅仅是一个快照而对快照进行增删改是没有意义的。
+
+
+### Map
+ConcurrentHashMap、ConcurrentSkipListMap（SkipList跳表） 区别在于Key是否有序
+
+### Set 
+CopyOnWriteArraySet、ConcurrentSkipListSet
+
+### Queue
+* 单端阻塞队列
+    * 可有界
+        * ArrayBlockingQueue（数组）
+        * LinkedBlockingQueue（链表）默认大小为Integer最大值
+    * 无界
+        * SynchronousQueue（无队列，Producer的入队必须等待Consumer的出队）
+        * LinkedTransferQueue（融合LinkedBlockingQueue和SynchronousQueue，性能优于LinkedBlockingQueue）
+        * PriorityBlockingQueue（支持按照优先级出队）
+        * DelayQueue（延时队列）
+
+    ![BlockingQueue1](media/15607632412286/BlockingQueue1.png)
+
+* 双端阻塞队列
+    * LinkedBlockingDeque
+    ![blockingDeque](media/15607632412286/blockingDeque.png)
+
+* 单端非阻塞队列
+    * ConcurrentLinkedQueue
+* 双端非阻塞队列
+    * ConcurrentLinkedDeque
+
+
+# 11. 原子类
+
+* 无锁方案实现原理（Compare And Swap）
+    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/atomic/SimulatedCAS.java)
+* 概览图
+    ![atomi](media/15608379390765/atomic.png)
+
+## 原子化的基本数据类型
+* AtomicBoolean
+* AtomicInteger
+* AtomicLong
+
+```
+getAndIncrement() // 原子化 i++
+getAndDecrement() // 原子化的 i--
+incrementAndGet() // 原子化的 ++i
+decrementAndGet() // 原子化的 --i
+// 当前值 +=delta，返回 += 前的值
+getAndAdd(delta) 
+// 当前值 +=delta，返回 += 后的值
+addAndGet(delta)
+//CAS 操作，返回是否成功
+compareAndSet(expect, update)
+// 以下四个方法
+// 新值可以通过传入 func 函数来计算
+getAndUpdate(func)
+updateAndGet(func)
+getAndAccumulate(x,func)
+accumulateAndGet(x,func)
+
+```
+
+## 原子化的对象引用类型
+* AtomicReference
+* AtomicStampedReference（版本号解决ABA问题）
+* AtomicMarkableReference（版本号解决ABA问题）
+
+## 原子化数组（比基本类型多了数组的索引参数）
+* AtomicIntegerArray
+* AtomicLongArray
+* AtomicReferenceArray
+
+## 原子化对象属性更新器（基于反射原子化更新对象属性，对象属性必须是volitale保证可见性）
+* AtomicIntegerFieldUpdater
+* AtomicLongFieldUpdater
+* AtomicReferenceFieldUpdater
+
+## 原子化累加器（只支持累加操作性能比原子化基本数据类型更好，不支持compareAndSet()）
+* DoubleAccumulator
+* DoubleAdder
+* LongAccumulator
+* LongAdder
 
         
+        # 12. 线程池
+
+## 为什么要用线程池
+* 创建对象，仅仅是在 JVM 的堆里分配一块内存而已；
+* 而创建一个线程，却需要调用操作系统内核的 API，然后操作系统要为线程分配一系列的资源，这个成本就很高了。
+
+## 线程池是一种生产者-消费者模式（非一般意义池化资源）
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/threadPool/MyThreadPool.java)
+* Java ThreadPoolExecutor
+  
+```
+ThreadPoolExecutor(
+  int corePoolSize,
+  int maximumPoolSize,
+  long keepAliveTime,
+  TimeUnit unit,
+  BlockingQueue<Runnable> workQueue,
+  ThreadFactory threadFactory,
+  RejectedExecutionHandler handler) 
+
+```
+* 参数意义 
+    * **corePoolSize**:最小或核心线程数。有些项目很闲，但是也不能把人都撤了，至少要留 corePoolSize 个人坚守阵地。
+    * **maximumPoolSize**: 最大线程数。当项目很忙时，就需要加人，但是也不能无限制地加，最多就加到 maximumPoolSize 个人。当项目闲下来时，就要撤人了，最多能撤到 corePoolSize 个人。
+    * **keepAliveTime & unit**:线程空闲回收时间，大小和单位，也就是说，如果一个线程空闲了keepAliveTime & unit这么久，而且线程池的线程数大于 corePoolSize ，就回收。
+    * **workQueue**:工作队列。
+    * **threadFactory**:通过这个参数你可以自定义如何创建线程，例如你可以给线程指定一个有意义的名字。
+    * **handler**: 拒绝策略。若线程池内所有线程都是忙碌，并且工作队列（有界队列）也满，线程池就会触发拒绝策略，以下为ThreadPoolExecutor提供的四种策略
+        * CallerRunsPolicy：提交任务的线程自己去执行该任务。
+        * AbortPolicy：默认的拒绝策略，会 throws RejectedExecutionException
+        * DiscardPolicy：直接丢弃任务，没有任何异常抛出。
+        * DiscardOldestPolicy：丢弃最老的任务，其实就是把最早进入工作队列的任务丢弃，然后把新任务加入到工作队列。
+* jdk 1.6之后加入allowCoreThreadTimeOut(boolean value) 核心线程也可释放。
+
+## 注意事项
+* 不建议使用Executors创建线程池（很多都是无界队列）
+* 慎用默认拒绝策略RejectedExecutionException不强制处理容易忽略，建议自定义拒绝策略配合策略降级使用
+* 异常处理不会通知所有需要按需捕获处理异常
+
+# 13. Future
+## 获得任务执行结果
+* ThreadPoolExecutor提供了三个submit方法
+
+
+
+* Future<?> submit(Runnable task);// 提交 Runnable 任务
+```
+这个方法的参数是一个 Runnable 接口，Runnable 接口的 run() 方法是没有返回值的，所以 submit(Runnable task) 这个方法返回的 Future 仅可以用来断言任务已经结束了，类似于 Thread.join()。
+```
+
+* <T> Future<T> submit(Callable<T> task);// 提交 Callable 任务
+```
+Callable只有一个 call() 方法，并且这个方法是有返回值的，所以这个方法返回的 Future 对象可以通过调用其 get() 方法来获取任务的执行结果。
+```
+* <T> Future<T> submit(Runnable task, T result);// 提交 Runnable 任务及结果引用  
+```
+假设这个方法返回的 Future 对象是 f，f.get()=的返回值就是传给 submit() 方法的参数 result。
+```
+
+
+* Future接口提供的方法
+
+```
+// 取消任务
+boolean cancel(boolean mayInterruptIfRunning);
+// 判断任务是否已取消  
+boolean isCancelled();
+// 判断任务是否已结束
+boolean isDone();
+// 获得任务执行结果
+get();
+// 获得任务执行结果，支持超时
+get(long timeout, TimeUnit unit);
+
+```
+
+
+## FutureTask工具类（实现了RunnableFuture而它继承了Runnable和Future接口）
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/futureTask/FutureTaskEx.java)
+* 构造函数类似线程池submit
+
+```
+FutureTask(Callable<V> callable);
+FutureTask(Runnable runnable, V result);
+
+```
