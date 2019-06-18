@@ -83,10 +83,10 @@ public class Singleton {
 # 3.JAVA内存模型
 ## 按需禁用缓存以及编译优化 [代码来源](http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html)
 
-* ##volatile
+* ## volatile
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/volatileExample/VolatileExample.java)
 
-* ##synchronized
+* ## synchronized
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/synchronizedEx/SynchronizedExample.java)
     
     ```
@@ -106,7 +106,7 @@ public class Singleton {
     }  
     
     ```
-* ##final
+* ## final
 
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
     
@@ -124,7 +124,7 @@ public class Singleton {
 
     ```
 
-* ##Happens-Before六大规则
+* ## Happens-Before六大规则
     1. **程序的顺序性规则**
     
      `程序前面对某个变量的修改一定是对后续操作可见的。`
