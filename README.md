@@ -355,6 +355,8 @@ void addIfNotExist(Vector v,
 }
 
 ```
+
+-------
 # 7. Lock和Condition
 ## 重复造轮子的原因抑或Lock&Condition的优势
 * 能够响应中断
@@ -430,6 +432,7 @@ public ReentrantLock(boolean fair){
 * 永远只在访问可变的成员变量时加锁
 * 永远不在调用其他对象的方法时加锁
 
+-------
 # 8.Semaphore
 ### 信号量模型
 ![1](media/15607571303480/1.png)
@@ -473,6 +476,7 @@ class Semaphore{
 #### 实现限流器（Semaphore 可以允许多个线程访问一个临界区）
 * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/semaphore/SemaphoreEx.java)
 
+-------
 # 9.ReadWriteLock、StampedLock、CountDownLatch、CyclicBarrier
 
 ## ReadWriteLock 读写锁
@@ -492,7 +496,7 @@ class Semaphore{
 * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/cyclicBarrierEx/CyclicBarrierEx.java)
 
    
-   
+-------
 # 10. 并发容器
 ## 同步容器（jdk1.5 之前）
 ### 包装安全类
@@ -560,6 +564,7 @@ CopyOnWriteArraySet、ConcurrentSkipListSet
 * 双端非阻塞队列
     * ConcurrentLinkedDeque
 
+-------
 
 # 11. 原子类
 
@@ -615,7 +620,8 @@ accumulateAndGet(x,func)
 * LongAdder
 
         
-        # 12. 线程池
+-------
+# 12. 线程池
 
 ## 为什么要用线程池
 * 创建对象，仅仅是在 JVM 的堆里分配一块内存而已；
@@ -654,6 +660,7 @@ ThreadPoolExecutor(
 * 慎用默认拒绝策略RejectedExecutionException不强制处理容易忽略，建议自定义拒绝策略配合策略降级使用
 * 异常处理不会通知所有需要按需捕获处理异常
 
+-------
 # 13. Future
 ## 获得任务执行结果
 * ThreadPoolExecutor提供了三个submit方法
