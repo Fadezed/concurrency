@@ -1,4 +1,4 @@
-# concurrency
+# concurrency 知识梳理源自极客时间[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
 JAVA多线程相关知识点梳理以及并发处理tips
 
 # 1.序言及全览
