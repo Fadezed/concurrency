@@ -9,13 +9,13 @@ package com.example.concurrency.finalEx;
  * @since 2019-06-13 1:38 PM
  */
 public class FinalExample {
-    static class Global{
+    private static class Global{
         private static FinalExample example;
 
     }
-    final int x;
-    int y;
-    static FinalExample f;
+    private final int x;
+    private int y;
+    private static FinalExample f;
 //    public FinalExample() {
 //        x = 3;
 //        y = 4;
@@ -28,11 +28,11 @@ public class FinalExample {
         Global.example = this;
     }
 
-    static void writer() {
+    private static void writer() {
         f = new FinalExample();
     }
 
-    static void reader() {
+    private static void reader() {
         if (f != null) {
             int i = f.x;
             int j = f.y;

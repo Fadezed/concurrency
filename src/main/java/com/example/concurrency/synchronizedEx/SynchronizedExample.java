@@ -5,12 +5,38 @@ import java.util.List;
 
 /**
  * 描述:
- * Synchronized
+ * Synchronized 实现原理 基于操作系统Mutex Lock (互斥锁)实现，所以每次获取和释放都会由用户态和内核态的切换成本高，jdk1.5之前性能差
+ * JVM通过ACC_SYNCHRONIZED 标识一个方法是否为同步方法,而代码块则通过monitorenter和monitorexit指令操作monitor对象
  *
- * @author zed
+ *
+ *
+ ** @author zed
  * @since 2019-06-13 11:47 AM
  */
 public class SynchronizedExample {
+
+    static class X {
+        /**
+         * 修饰非静态方法 锁对象为当前类的实例对象 this
+         */
+        synchronized void get() {
+        }
+
+        /**
+         * 修饰静态方法 锁对象为当前类的Class对象 Class X
+         */
+        synchronized static void set() {
+        }
+
+        /**
+         * 修饰代码块
+         */
+        Object obj = new Object();
+        void put() {
+            synchronized(obj) {
+            }
+        }
+    }
 
     /**
      * 利用Synchronized 实现原子操作

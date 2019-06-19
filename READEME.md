@@ -87,6 +87,45 @@ public class Singleton {
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/volatileExample/VolatileExample.java)
 
 * ## synchronized
+    
+    * JVM 中的同步是基于进入和退出管程（Monitor）对象实现的。每个对象实例都会有一个 Monitor，Monitor 可以和对象一起创建、销毁。Monitor 是由 ObjectMonitor 实现，而 ObjectMonitor 实现，而 ObjectMonitor 是由C++ 的 ObjectMonitor.hpp 文件实现
+
+         `当多个线程同时访问时，多个线程会被先放在EntryList集合，处于block状态的线程，都会被加入到该列表。接下来当线程获取到对象的Monitor时，Monitor依靠底层操作系统的Mutex Lock来实现互斥，线程申请Mutex成功则持有，其它线程无法获取到Mutex`
+    ```
+    ObjectMonitor() {
+       _header = NULL;
+       _count = 0; // 记录个数
+       _waiters = 0,
+       _recursions = 0;
+       _object = NULL;
+       _owner = NULL;
+       _WaitSet = NULL; // 处于 wait 状态的线程，会被加入到 _WaitSet
+       _WaitSetLock = 0 ;
+       _Responsible = NULL ;
+       _succ = NULL ;
+       _cxq = NULL ;
+       FreeNext = NULL ;
+       _EntryList = NULL ; // 处于等待锁 block 状态的线程，会被加入到该列表
+       _SpinFreq = 0 ;
+       _SpinClock = 0 ;
+       OwnerIsThread = 0 ;
+    }
+    ```
+
+    *  wait():如果线程调用 wait() 方法，就会释放当前持有的 Mutex，并且该线程会进入 WaitSet 集合中，等待下一次被唤醒。如果当前线程顺利执行完方法，也将释放 Mutex。
+       ![waitSet](media/15604993692307/waitSet.png)
+
+    * 锁升级优化
+        * jdk1.6引入Java对象头（MarkWord、指向类的指针以及数组长度三部分组成）
+           
+            `对象实例分为对象头、实例数据和对齐填充`
+        *  64位JVM中MarkWord的存储结构
+            ![markWord](media/15604993692307/markWord.jpg)
+        * 偏向锁
+        * 轻量级锁
+        * 重量级锁
+           
+    
     * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/synchronizedEx/SynchronizedExample.java)
     
     ```
@@ -106,23 +145,26 @@ public class Singleton {
     }  
     
     ```
-* ## final
+    
+## final
 
-    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
+*  [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
+
+`修饰变量时，初衷是告诉编译器：这个变量生而不变。`
     
-    `修饰变量时，初衷是告诉编译器：这个变量生而不变。`
-    
-    ```
+  
+```
     final int x;
     // 错误的构造函数
     public FinalFieldExample() { 
-      x = 3;
-      y = 4;
-      // 此处就是讲 this 逸出，
-      global.obj = this;
+          x = 3;
+          y = 4;
+          // 此处就是讲 this 逸出，
+          global.obj = this;
     }
 
-    ```
+        
+```
 
 * ## Happens-Before六大规则
     1. **程序的顺序性规则**
@@ -620,11 +662,11 @@ ThreadPoolExecutor(
 这个方法的参数是一个 Runnable 接口，Runnable 接口的 run() 方法是没有返回值的，所以 submit(Runnable task) 这个方法返回的 Future 仅可以用来断言任务已经结束了，类似于 Thread.join()。
 ```
 
-* <T> Future<T> submit(Callable<T> task);// 提交 Callable 任务
+* <T> Future <T> submit(Callable <T> task);// 提交 Callable 任务
 ```
 Callable只有一个 call() 方法，并且这个方法是有返回值的，所以这个方法返回的 Future 对象可以通过调用其 get() 方法来获取任务的执行结果。
 ```
-* <T> Future<T> submit(Runnable task, T result);// 提交 Runnable 任务及结果引用  
+* <T> Future <T> submit(Runnable task, T result);// 提交 Runnable 任务及结果引用  
 ```
 假设这个方法返回的 Future 对象是 f，f.get()=的返回值就是传给 submit() 方法的参数 result。
 ```

@@ -7,7 +7,7 @@ public class StaticSingleton {
 
     private StaticSingleton(){
     }
-    public static class StaticSingletonHolder{
+    private static class StaticSingletonHolder{
         private static StaticSingleton singleton= new StaticSingleton();
     }
     public static StaticSingleton getInstance(){

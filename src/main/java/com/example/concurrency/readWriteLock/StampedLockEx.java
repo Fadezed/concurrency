@@ -5,7 +5,7 @@ import java.util.concurrent.locks.StampedLock;
 /**
  * 描述:
  * StampedLockEx
- * 写锁和悲观锁 跟ReentrantReadWriteLock 类似，非可重入锁
+ * 写锁和悲观锁 跟ReentrantReadWriteLock 类似，非可重入锁，并且不支持条件变量
  * ReadWriteLock 支持多个线程同时读，但是当多个线个线程同时读的时候，
  * 所有的写操作会被阻塞；而 StampedLock 提供的乐观读（无锁），是允许一个线程获取写锁的，也就是说不是所有的写操作都被阻塞。
  *

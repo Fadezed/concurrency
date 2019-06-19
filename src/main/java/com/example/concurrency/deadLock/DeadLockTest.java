@@ -18,7 +18,7 @@ public class DeadLockTest {
     private ThreadDumpHelper dumpHelper = new ThreadDumpHelper();
     /**
      * 事实上String 对象不建议当成锁的对象（常量池的存在会导致锁重复）
-     * 这里故意讲A、B放入堆中以示问题
+     * 这里故意将A、B放入堆中以示问题
      */
     private static String A = new String("A");
     private static String B = new String("B");

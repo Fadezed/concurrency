@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 描述:
  * 读写锁实现缓存
  *
- * ReentrantReadWriteLock 只支持锁的降级 不支持锁升级 并且只有写锁可以创建呢条件变量
+ * ReentrantReadWriteLock 只支持锁的降级 不支持锁升级 并且只有写锁可以创建条件变量
  * 读写锁允许多个线程同时读共享变量，当一个线程在写共享变量的时候，是不允许其他线程执行写操作和读操作。
  *
  *
