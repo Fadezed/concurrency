@@ -1,3 +1,6 @@
+内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
+相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
+
 # 1.序言及全览
 ## 学习并发的原因
 * 硬件驱动
@@ -698,3 +701,4 @@ FutureTask(Callable<V> callable);
 FutureTask(Runnable runnable, V result);
 
 ```
+
