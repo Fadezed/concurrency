@@ -1,6 +1,7 @@
 内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
 相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
 
+
 # 1.序言及全览
 ## 学习并发的原因
 * 硬件驱动
@@ -151,8 +152,10 @@ public class Singleton {
 ## final
 
 *  [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
+    * 修饰变量时，初衷是告诉编译器：这个变量生而不变，非immutable，即只能表示对象引用不能被赋值（例如List）；
+    *  修饰方法则方法不能被重写
+    *  修饰类则不能被扩展继承。
 
-`修饰变量时，初衷是告诉编译器：这个变量生而不变。`
     
   
 ```
@@ -300,8 +303,7 @@ public class Singleton {
     * 多核CPU ：最佳线程数 =CPU 核数 * [ 1 +（I/O 耗时 / CPU 耗时）
 
 -------
-
-# 6. 若干反例
+#6. 若干反例
 
 
 ```
@@ -432,6 +434,7 @@ public ReentrantLock(boolean fair){
 * 永远只在访问可变的成员变量时加锁
 * 永远不在调用其他对象的方法时加锁
 
+
 -------
 # 8.Semaphore
 ### 信号量模型
@@ -476,6 +479,7 @@ class Semaphore{
 #### 实现限流器（Semaphore 可以允许多个线程访问一个临界区）
 * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/semaphore/SemaphoreEx.java)
 
+
 -------
 # 9.ReadWriteLock、StampedLock、CountDownLatch、CyclicBarrier
 
@@ -496,6 +500,7 @@ class Semaphore{
 * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/cyclicBarrierEx/CyclicBarrierEx.java)
 
    
+
 -------
 # 10. 并发容器
 ## 同步容器（jdk1.5 之前）
@@ -564,8 +569,8 @@ CopyOnWriteArraySet、ConcurrentSkipListSet
 * 双端非阻塞队列
     * ConcurrentLinkedDeque
 
--------
 
+-------
 # 11. 原子类
 
 * 无锁方案实现原理（Compare And Swap）
@@ -613,14 +618,14 @@ accumulateAndGet(x,func)
 * AtomicLongFieldUpdater
 * AtomicReferenceFieldUpdater
 
-## 原子化累加器（只支持累加操作性能比原子化基本数据类型更好，不支持compareAndSet()）
+## 原子化累加器（空间换时间,只支持累加操作性能比原子化基本数据类型更好，不支持compareAndSet()）
 * DoubleAccumulator
 * DoubleAdder
 * LongAccumulator
 * LongAdder
 
-        
 -------
+
 # 12. 线程池
 
 ## 为什么要用线程池
@@ -659,6 +664,7 @@ ThreadPoolExecutor(
 * 不建议使用Executors创建线程池（很多都是无界队列）
 * 慎用默认拒绝策略RejectedExecutionException不强制处理容易忽略，建议自定义拒绝策略配合策略降级使用
 * 异常处理不会通知所有需要按需捕获处理异常
+
 
 -------
 # 13. Future
@@ -708,4 +714,3 @@ FutureTask(Callable<V> callable);
 FutureTask(Runnable runnable, V result);
 
 ```
-
