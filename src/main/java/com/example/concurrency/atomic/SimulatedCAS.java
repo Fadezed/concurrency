@@ -2,7 +2,7 @@ package com.example.concurrency.atomic;
 
 /**
  * 描述:
- * SimulatedCAS
+ * SimulatedCAS 模拟cas操作
  *
  * @author zed
  * @since 2019-06-18 2:09 PM
@@ -26,7 +26,7 @@ public class SimulatedCAS{
      * @param newValue 更新值
      * @return 旧值
      */
-    synchronized int cas(
+    private synchronized int cas(
             int expect, int newValue){
         // 读目前 count 的值
         int curValue = count;

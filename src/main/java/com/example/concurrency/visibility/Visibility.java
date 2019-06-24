@@ -2,7 +2,6 @@ package com.example.concurrency.visibility;
 
 import com.example.concurrency.threadPool.ThreadPoolBuilder;
 import com.example.concurrency.util.ThreadUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -13,10 +12,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author zed
  * @since 2019-06-13 9:05 AM
  */
-@Slf4j
 public class Visibility {
     private static long count = 0;
-    private void add10K() {
+    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().build();
+
+    private void add10k() {
         int idx = 0;
         while(idx++ < 10000) {
             count += 1;
@@ -30,14 +30,13 @@ public class Visibility {
     public static void main(String[] args) {
 //        System.out.println(calc());
 
-        log.info("我开始了");
-        ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().build();
+        System.out.println("start");
         //线程开始
         threadPoolExecutor.execute(() -> {
             while(flag){
 
             }
-            log.info("我退出了");
+            System.out.println("stop");
 
         });
         ThreadUtil.sleep(100);
@@ -45,23 +44,12 @@ public class Visibility {
     }
     private static long calc(){
         final Visibility visibility = new Visibility();
-        // 创建两个线程，执行 add() 操作
-        Thread th1 = new Thread(()->{
-            visibility.add10K();
-        });
-        Thread th2 = new Thread(()->{
-            visibility.add10K();
-        });
-        // 启动两个线程
-        th1.start();
-        th2.start();
-        // 等待两个线程执行结束
-        try{
-            th1.join();
-            th2.join();
-        }catch (InterruptedException e){
-            Thread.currentThread().interrupt();
-        }
+        threadPoolExecutor.execute(visibility::add10k);
+        threadPoolExecutor.execute(visibility::add10k);
+        /*
+         * 调用shuntDown保证线程执行完毕
+         */
+        threadPoolExecutor.shutdown();
         return count;
 
     }

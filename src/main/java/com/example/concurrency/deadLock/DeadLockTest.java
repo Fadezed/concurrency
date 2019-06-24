@@ -1,7 +1,10 @@
 package com.example.concurrency.deadLock;
 
+import com.example.concurrency.threadPool.ThreadPoolBuilder;
 import com.example.concurrency.util.ThreadDumpHelper;
 import com.example.concurrency.util.ThreadUtil;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 /**
@@ -16,19 +19,21 @@ import com.example.concurrency.util.ThreadUtil;
  */
 public class DeadLockTest {
     private ThreadDumpHelper dumpHelper = new ThreadDumpHelper();
+    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().setPoolSize(2).setThreadNamePrefix("死锁测试线程").build();
+
     /**
      * 事实上String 对象不建议当成锁的对象（常量池的存在会导致锁重复）
      * 这里故意将A、B放入堆中以示问题
      */
-    private static String A = new String("A");
-    private static String B = new String("B");
+    private static final String A = new String("A");
+    private static final String B = new String("B");
 
     public static void main(String[] args) {
         new DeadLockTest().deadLock();
     }
 
     private void deadLock() {
-        Thread t1 = new Thread(() -> {
+        threadPoolExecutor.execute(() -> {
             synchronized (A){
                 ThreadUtil.sleep(2);
                 synchronized (B){
@@ -37,17 +42,14 @@ public class DeadLockTest {
             }
         });
 
-        Thread t2 = new Thread(() -> {
+        threadPoolExecutor.execute(() -> {
             synchronized (B) {
                 synchronized (A) {
                     System.out.println("2");
                 }
             }
         });
-        t1.setName("线程1");
-        t2.setName("线程2");
-        t1.start();
-        t2.start();
+        threadPoolExecutor.shutdown();
 //        //获取最终状态，可能会出现线程T1 状态为TIMED_WAITING 状态（因为sleep）
         ThreadUtil.sleep(2);
         dumpHelper.tryThreadDump();

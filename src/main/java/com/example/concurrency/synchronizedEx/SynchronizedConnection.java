@@ -1,7 +1,11 @@
 package com.example.concurrency.synchronizedEx;
 
+import com.example.concurrency.threadPool.ThreadPoolBuilder;
 import com.example.concurrency.util.ThreadDumpHelper;
 import com.example.concurrency.util.ThreadUtil;
+
+import java.util.Scanner;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 描述:
@@ -11,6 +15,8 @@ import com.example.concurrency.util.ThreadUtil;
  * @since 2019-06-13 1:13 PM
  */
 public class SynchronizedConnection {
+    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().setPoolSize(2).setThreadNamePrefix("sync测试线程").build();
+
     /**
      * 线程不安全
      */
@@ -36,10 +42,17 @@ public class SynchronizedConnection {
     /**
      * 直接对转账方法做同步方式
      * 锁对象为this 而target对象资源不受保护
-     *
      */
     static class SynchronizedTransferAccount {
+        /**
+         * 用于测试尽量保证并发
+         */
+        private volatile boolean flag = true;
+        private void breakLoop(){
+            this.flag =false;
+        }
         private int balance;
+
         private SynchronizedTransferAccount(int balance){
             this.balance =balance;
         }
@@ -48,29 +61,47 @@ public class SynchronizedConnection {
          * @param target 目标账户
          * @param amt 转账数量
          */
-        synchronized void transfer(
-                SynchronizedTransferAccount target, int amt){
-            if (this.balance > amt) {
+        synchronized void transfer(SynchronizedTransferAccount target, int amt){
+
+            if (this.balance >= amt) {
+                while (flag){
+
+                }
+                System.out.println(Thread.currentThread().getName()+"this amount"+this.balance+"target amount:"+target.balance);
                 this.balance -= amt;
                 target.balance += amt;
-
+                System.out.println(Thread.currentThread().getName()+"this amount"+this.balance+"target amount:"+target.balance);
             }
+
         }
         public static void main(String[] args){
             SynchronizedTransferAccount a = new SynchronizedTransferAccount(200);
             SynchronizedTransferAccount b = new SynchronizedTransferAccount(200);
             SynchronizedTransferAccount c = new SynchronizedTransferAccount(200);
+
             //账户a给b转账100
-            Thread t1 = new Thread(() -> {
+            threadPoolExecutor.execute(() -> {
                 a.transfer(b,100);
             });
             //账户b转账给c 100
-            Thread t2 = new Thread(() -> {
+            threadPoolExecutor.execute(() -> {
                 b.transfer(c,100);
             });
-            t1.start();
-            t2.start();
-            // 本地测试不好模拟出同时进入临界区的场景
+
+            Scanner scanner = new Scanner(System.in);
+            while (scanner.hasNext()){
+                String v = scanner.next();
+                if("1".equals(v)){
+                    a.breakLoop();
+                    b.breakLoop();
+                    c.breakLoop();
+                    break;
+                }
+            }
+            threadPoolExecutor.shutdown();
+            System.out.println("a:"+a.balance);
+            System.out.println("b:"+b.balance);
+            System.out.println("c:"+c.balance);
             // 线程t1 和t2 如果同时进入临界区则 读取到的账户b的余额都是200 因此结果会因为t1 和t2的执行顺序变成100 或者300
         }
     }
@@ -151,27 +182,17 @@ public class SynchronizedConnection {
         public static void main(String[] args) {
             DeadLockAccount a = new DeadLockAccount();
             DeadLockAccount b = new DeadLockAccount();
-            Thread t1 = new Thread(() -> {
+            threadPoolExecutor.execute(() -> {
                 a.transfer(b,100);
             });
 
-            Thread t2 = new Thread(() -> {
+            threadPoolExecutor.execute(() -> {
                 b.transfer(a,100);
             });
-            t1.setName("T1");
-            t2.setName("T2");
-            t1.start();
-            t2.start();
-            //获取最终状态，可能会出现线程T1 状态为TIMED_WAITING 状态（因为sleep）
-            ThreadUtil.sleep(2);
+            threadPoolExecutor.shutdown();
             dumpHelper.tryThreadDump();
         }
     }
-
-
-
-
-
 
 }
 

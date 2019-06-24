@@ -1,5 +1,9 @@
 package com.example.concurrency.contentSwitch;
 
+import com.example.concurrency.threadPool.ThreadPoolBuilder;
+
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * @author zed
  * 上下文切换测试类
@@ -14,33 +18,35 @@ package com.example.concurrency.contentSwitch;
  */
 public class ContentSwitchTest {
     private static final long COUNT = 10000000000L;
-    public static void main(String[] args) throws InterruptedException{
+
+    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().setPoolSize(1).build();
+
+    public static void main(String[] args){
         concurrency();
         serial();
     }
 
 
-    private static void concurrency() throws InterruptedException{
+    private static void concurrency(){
         long start = System.currentTimeMillis();
-        Thread thread = new Thread(() -> {
+        threadPoolExecutor.execute(() -> {
             int a =0;
             for (long i =0;i < COUNT;i++){
                 a+=5;
             }
             System.out.println(a);
         });
-        thread.start();
         int b = 0;
         for(long i = 0;i < COUNT;i ++){
             b--;
         }
-        thread.join();
+        threadPoolExecutor.shutdown();
         long time = System.currentTimeMillis() - start;
         System.out.println("concurrency :"  +time +"ms,b="+b);
 
     }
 
-    private static void serial() throws InterruptedException{
+    private static void serial(){
         long start = System.currentTimeMillis();
         int a = 0;
         for(long i = 0;i < COUNT;i++){
