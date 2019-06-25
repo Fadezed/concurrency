@@ -1,6 +1,6 @@
 package com.example.concurrency;
 
-import com.example.concurrency.threadPool.ThreadPoolBuilder;
+import com.example.concurrency.features.threadPool.ThreadPoolBuilder;
 import com.example.concurrency.util.ConcurrentUtil;
 import com.example.concurrency.util.ThreadDumpHelper;
 import com.example.concurrency.util.ThreadUtil;

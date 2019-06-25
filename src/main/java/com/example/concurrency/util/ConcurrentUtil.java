@@ -1,9 +1,9 @@
 package com.example.concurrency.util;
 
-import com.example.concurrency.jsr166e.LongAdder;
-import com.example.concurrency.limiter.RateLimiterUtil;
-import com.example.concurrency.limiter.Sampler;
-import com.example.concurrency.limiter.TimeIntervalLimiter;
+import com.example.concurrency.features.jsr166e.LongAdder;
+import com.example.concurrency.features.limiter.RateLimiterUtil;
+import com.example.concurrency.features.limiter.Sampler;
+import com.example.concurrency.features.limiter.TimeIntervalLimiter;
 import com.google.common.util.concurrent.RateLimiter;
 
 import java.util.concurrent.CountDownLatch;
