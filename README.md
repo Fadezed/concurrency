@@ -1,6 +1,6 @@
 内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
 相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
-
+作者微信:Zed-RD 
 
 # 1.序言及全览
 ## 学习并发的原因
