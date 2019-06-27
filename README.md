@@ -1,6 +1,6 @@
 内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
 相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
-作者微信:Zed-RD  [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?branch=master)](https://travis-ci.org/Fadezed/concurrency)
+可加我微信:Zed-RD  [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?branch=master)](https://travis-ci.org/Fadezed/concurrency)
 
 
 <div align="center">  
