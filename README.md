@@ -1,4 +1,4 @@
-内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)、[java-concurrency-patterns](https://github.com/LeonardoZ/java-concurrency-patterns)
+内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)[《java-concurrency-patterns》](https://github.com/LeonardoZ/java-concurrency-patterns)
 相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
 
  [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?branch=master)](https://travis-ci.org/Fadezed/concurrency)
