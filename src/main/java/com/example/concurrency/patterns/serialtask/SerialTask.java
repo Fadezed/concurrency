@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 描述:
- * 通过单锁和volatile 实现的线程共享方案
+ * 通过锁和volatile 实现的线程共享方案
  * 适用场景：特定条件下有效阻止并行执行
  *
  * @author zed
