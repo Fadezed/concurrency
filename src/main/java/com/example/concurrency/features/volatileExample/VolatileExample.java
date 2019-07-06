@@ -40,7 +40,7 @@ public class VolatileExample {
         while(sc.hasNext()){
             String value = sc.next();
             if("1".equals(value)){
-                new Thread(() -> aVolatile.stopThread()).start();
+                new Thread(aVolatile::stopThread).start();
                 break ;
             }
         }
