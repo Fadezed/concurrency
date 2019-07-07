@@ -1,6 +1,7 @@
-内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)
+内容整理自[《Java并发编程实战》](https://time.geekbang.org/column/intro/159)[《java-concurrency-patterns》](https://github.com/LeonardoZ/java-concurrency-patterns)
 相关工具类[《vjtools》](https://github.com/vipshop/vjtools)
-WeChat:Zed-RD  [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?branch=master)](https://travis-ci.org/Fadezed/concurrency)
+
+ [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?branch=master)](https://travis-ci.org/Fadezed/concurrency)
 
 
 <div align="center">  
@@ -39,20 +40,18 @@ WeChat:Zed-RD  [![Build Status](https://travis-ci.org/Fadezed/concurrency.svg?br
 
 
 ## 缓存导致的可见性问题
-
 * 一个线程对共享变量的修改，另外一个线程能够立刻看到，我们称为**可见性**
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/visibility/Visibility.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/visibility/Visibility.java)
 ![单核CPU](media/15603316282468/a07e8182819e2b260ce85b2167d446da.png)
 ![多核CPU](media/15603316282468/e2aa76928b2bc135e08e7590ca36e0ea.png)
 
 
 ## 线程切换带来的原子性问题
 * 一个或者多个操作在 CPU 执行的过程中不被中断的特性称为**原子性**
-
 * **时间片**概念
 * 线程切换 ---〉提升cpu利用率。  tips:Unix系统因支持多进程分时复用而出名。
-* 线程切换[代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/contentSwitch/ContentSwitchTest.java)。
-* 原子问题[代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/atomic/AtomicCounter.java)
+* 线程切换[代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/contentswitch/ContentSwitchTest.java)。
+* 原子问题[代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/atomic/AtomicCounter.java)
 
 ![254b129b145d80e9bb74123d6e620efb](media/15603316282468/254b129b145d80e9bb74123d6e620efb.png)
 * count+=1 操作分析
@@ -94,7 +93,7 @@ public class Singleton {
 ## 按需禁用缓存以及编译优化 [代码来源](http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html)
 
 * ## volatile
-    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/volatileExample/VolatileExample.java)
+    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/volatilecase/VolatileExample.java)
 
 * ## synchronized
     
@@ -134,9 +133,9 @@ public class Singleton {
         * 偏向锁
         * 轻量级锁
         * 重量级锁
-           
     
-    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/synchronizedEx/SynchronizedExample.java)
+    
+   * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/synchronizedcase/SynchronizedExample.java)
     
     ```
     class X {
@@ -158,7 +157,7 @@ public class Singleton {
     
 ## final
 
-*  [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/finalEx/FinalExample.java)
+*  [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/finalcase/FinalExample.java)
     * 修饰变量时，初衷是告诉编译器：这个变量生而不变，非immutable，即只能表示对象引用不能被赋值（例如List）；
     *  修饰方法则方法不能被重写
     *  修饰类则不能被扩展继承。
@@ -238,7 +237,7 @@ public class Singleton {
            
 -------
 # 4.JAVA线程的生命周期 
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/threadState/ThreadState.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/threadstate/ThreadState.java)
 
 ## 通用的线程生命周期
 * 初始状态
@@ -484,7 +483,7 @@ class Semaphore{
 ### 使用方法
 #### 实现互斥
 #### 实现限流器（Semaphore 可以允许多个线程访问一个临界区）
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/semaphore/SemaphoreEx.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/semaphore/SemaphoreEx.java)
 
 
 -------
@@ -495,16 +494,16 @@ class Semaphore{
 * 只允许一个线程写共享变量
 * 如果一个写线程正在执行写操作，此时禁止读线程读共享变量
 
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/readWriteLock/CacheByReadWriteLock.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/readwritelock/CacheByReadWriteLock.java)
 
 ## StampedLock 加上乐观读（无锁）
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/readWriteLock/StampedLockEx.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/readwritelock/StampedLockEx.java)
 
 ## CountDownLatch
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/countDownLatchEx/CountDownLatchEx.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/countdownlatch/CountDownLatchEx.java)
 
 ##  CyclicBarrier
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/cyclicBarrierEx/CyclicBarrierEx.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/cyclicbarrier/CyclicBarrierEx.java)
 
    
 
@@ -581,7 +580,7 @@ CopyOnWriteArraySet、ConcurrentSkipListSet
 # 11. 原子类
 
 * 无锁方案实现原理（Compare And Swap）
-    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/atomic/SimulatedCAS.java)
+    * [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/atomic/SimulatedCompareAndSwap.java)
 * 概览图
     ![atomi](media/15608379390765/atomic.png)
 
@@ -640,7 +639,7 @@ accumulateAndGet(x,func)
 * 而创建一个线程，却需要调用操作系统内核的 API，然后操作系统要为线程分配一系列的资源，这个成本就很高了。
 
 ## 线程池是一种生产者-消费者模式（非一般意义池化资源）
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/threadPool/MyThreadPool.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/threadPool/MyThreadPool.java)
 * Java ThreadPoolExecutor
   
 ```
@@ -713,7 +712,7 @@ get(long timeout, TimeUnit unit);
 
 
 ## FutureTask工具类（实现了RunnableFuture而它继承了Runnable和Future接口）
-* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/futureTask/FutureTaskEx.java)
+* [代码示例](https://github.com/Fadezed/concurrency/blob/master/src/main/java/com/example/concurrency/features/futuretask/FutureTaskEx.java)
 * 构造函数类似线程池submit
 
 ```
