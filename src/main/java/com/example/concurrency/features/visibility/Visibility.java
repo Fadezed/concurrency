@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class Visibility {
     private static long count = 0;
-    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().build();
+    private static ThreadPoolExecutor threadPoolExecutor = ThreadPoolBuilder.fixedPool().setPoolSize(2).build();
 
     private void add10k() {
         int idx = 0;
